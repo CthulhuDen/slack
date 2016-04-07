@@ -2,25 +2,27 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                slack-hs
-version:             0.1.0.0
+version:             0.2.0.9
 license:             MIT
 license-file:        LICENSE
-author:              Owain Lewis
-maintainer:          owain@owainlewis.com
+author:              Owain Lewis, Cthulhu.Den
+maintainer:          owain@owainlewis.com, cthulhu.den@gmail.com
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
 
 library
-    exposed-modules:     Main, Network.Slack.Api
-    build-depends:       base >=4.6,
-                         http-client,
-                         http-client-tls,
-                         http-types,
-                         aeson,
-                         containers,
-                         bytestring,
-                         text
+    exposed-modules:     Main, Network.Slack.Api, Yesod.OAuth2.Slack
+    build-depends:       base >=4.6
+                         , http-client
+                         , http-client-tls
+                         , http-types
+                         , aeson
+                         , containers
+                         , bytestring
+                         , text
+                         , yesod-auth
+                         , yesod-auth-oauth2
     hs-source-dirs:      src
     default-language:    Haskell2010
 
