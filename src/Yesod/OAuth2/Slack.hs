@@ -11,8 +11,10 @@ import Network.HTTP.Client
 import Network.HTTP.Types
 import Data.Text (Text, intercalate, unpack)
 import Data.Text.Encoding
+import Data.ByteString (ByteString)
 import Data.Monoid ((<>))
 import Control.Exception (throwIO)
+import Data.Maybe (fromJust)
 import Yesod.Auth
 import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..)
                          , YesodOAuth2Exception(InvalidProfileResponse)
@@ -66,15 +68,16 @@ fetchCredits manager token = do
     resp <- httpLbs req manager
     if statusIsSuccessful $ responseStatus resp
         then case decode $ responseBody resp of
-            Just ns -> return $ toCreds ns token
+            Just ns -> return $ toCreds ns token $ scope resp
             Nothing -> throwIO parseFailure
         else throwIO requestFailure
   where
     parseFailure = InvalidProfileResponse pluginName "failed to parse account"
     requestFailure = InvalidProfileResponse pluginName "failed to get account"
+    scope resp = fromJust $ "X-OAuth-Scopes" `lookup` responseHeaders resp
 
-toCreds :: SlackUser -> AccessToken -> Creds a
-toCreds ns token = Creds
+toCreds :: SlackUser -> AccessToken -> ByteString -> Creds a
+toCreds ns token scope = Creds
                     { credsPlugin = pluginName
                     , credsIdent = intercalate "-" [slackUserId ns, slackUserTeamId ns]
                     , credsExtra =
@@ -84,5 +87,6 @@ toCreds ns token = Creds
                         , ("team_name", slackUserTeamName ns)
                         , ("team_url", slackUserTeamUrl ns)
                         , ("access_token", decodeUtf8 $ accessToken token)
+                        , ("scope", decodeUtf8 scope)
                         ]
                     }

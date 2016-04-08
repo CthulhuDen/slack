@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                slack-hs
-version:             0.2.0.9
+version:             0.2.0.10
 license:             MIT
 license-file:        LICENSE
 author:              Owain Lewis, Cthulhu.Den
@@ -12,7 +12,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-    exposed-modules:     Main, Network.Slack.Api, Yesod.OAuth2.Slack
+    exposed-modules:     Network.Slack.Api, Yesod.OAuth2.Slack
     build-depends:       base >=4.6
                          , http-client
                          , http-client-tls
