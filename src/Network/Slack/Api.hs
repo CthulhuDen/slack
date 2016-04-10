@@ -147,10 +147,10 @@ teamEndpoints = M.fromList
 
 userEndpoints :: M.Map String String
 userEndpoints = M.fromList
-    [ ("user.getPresence",  "Gets user presence information")
-    , ("user.info",         "Gets information about a user")
-    , ("user.list",         "Lists all users in a Slack team")
-    , ("user.setActive",    "Marks a user as active")
+    [ ("users.getPresence", "Gets user presence information")
+    , ("users.info",        "Gets information about a user")
+    , ("users.list",        "Lists all users in a Slack team")
+    , ("users.setActive",   "Marks a user as active")
     , ("users.setPresence", "Manually sets user presence")
     ]
 

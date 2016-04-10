@@ -3,6 +3,8 @@
 module Network.Slack.Types.Internal
     ( SlackResponsible (..)
     , SlackResponse (..)
+    , getRecord
+    , getCollection
     ) where
 
 import Data.ByteString  (ByteString)
@@ -13,6 +15,7 @@ import Data.HashMap.Strict as H
 import Data.Maybe (fromMaybe, fromJust)
 import qualified Network.Slack.Api as Api
 import Control.Arrow ((***))
+import Data.Monoid ((<>))
 
 class FromJSON a => SlackResponsible a where
     endpoint :: a -> Text
@@ -33,7 +36,8 @@ class FromJSON a => SlackResponsible a where
 getResponse :: (SlackResponsible a) => Text -> Text -> [(Text, Text)] -> IO (SlackResponse a)
 getResponse token endpoint params = process <$> Api.request token' endpoint' params'
   where
-    process (Api.Success json) = fromJust $ decode json
+    process Api.InvalidEndpoint = error $ "Endpoint " <> unpack endpoint <> " is not known by Network.Slack.Api"
+    process (Api.Success json)  = fromJust $ decode json
     token' = unpack token
     endpoint' = unpack endpoint
     params' = (unpack *** unpack) <$> params
