@@ -7,15 +7,17 @@ module Network.Slack.Types.File
 
 import Data.Text
 import Data.Time
+import Data.Time.Clock.POSIX
 import Data.Aeson
 import Data.Aeson.Types
 import Network.Slack.Types.Internal
+import Debug.Trace
 
-data SlackFileMode = Hosted | External | Snippet | Post deriving Show
+data SlackFileMode = Hosted | External | Snippet | Post deriving (Show, Eq)
 
 data SlackFile = SlackFile
                     { slackFileId :: Text
-                    , slackFileTimeCreated :: UTCTime
+                    , slackFileCreated :: UTCTime
                     , slackFileName :: Maybe Text
                     , slackFileMimetype :: Text
                     , slackFileFiletype :: Text
@@ -34,7 +36,7 @@ instance FromJSON SlackFileMode where
 instance FromJSON SlackFile where
     parseJSON = withObject "SlackFile" $ \o -> do
         slackFileId <- o .: "id"
-        slackFileTimeCreated <- o .: "time_created"
+        slackFileCreated <- posixSecondsToUTCTime . fromInteger <$> o .: "created"
         slackFileName <- o .:? "name"
         slackFileMimetype <- o .: "mimetype"
         slackFileFiletype <- o .: "filetype"
