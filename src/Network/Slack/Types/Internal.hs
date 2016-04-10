@@ -3,8 +3,6 @@
 module Network.Slack.Types.Internal
     ( SlackResponsible (..)
     , SlackResponse (..)
-    , getRecord
-    , getCollection
     ) where
 
 import Data.ByteString  (ByteString)

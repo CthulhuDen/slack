@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                slack-hs
-version:             0.3.2.5
+version:             0.3.3.0
 license:             MIT
 license-file:        LICENSE
 author:              Owain Lewis, Cthulhu.Den
@@ -16,6 +16,7 @@ library
                          , Yesod.OAuth2.Slack
                          , Network.Slack.Types
     other-modules:       Network.Slack.Types.Internal
+                         , Network.Slack.Types.Confirmation
                          , Network.Slack.Types.User
                          , Network.Slack.Types.File
     build-depends:       base >=4.6
