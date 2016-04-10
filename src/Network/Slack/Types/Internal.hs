@@ -11,6 +11,8 @@ import Data.ByteString  (ByteString)
 import Data.Aeson
 import Data.Aeson.Types
 import Data.Text        (Text, unpack)
+import qualified Data.Text.Lazy.Encoding as LE
+import qualified Data.Text.Lazy as LT
 import Data.HashMap.Strict as H
 import Data.Maybe (fromMaybe, fromJust)
 import qualified Network.Slack.Api as Api
@@ -37,7 +39,9 @@ getResponse :: (SlackResponsible a) => Text -> Text -> [(Text, Text)] -> IO (Sla
 getResponse token endpoint params = process <$> Api.request token' endpoint' params'
   where
     process Api.InvalidEndpoint = error $ "Endpoint " <> unpack endpoint <> " is not known by Network.Slack.Api"
-    process (Api.Success json)  = fromJust $ decode json
+    process (Api.Success json)  = fromMaybe (error failMsg) $ decode json
+      where
+        failMsg = "Could not decode response from JSON\n" <> (LT.unpack . LE.decodeUtf8) json
     token' = unpack token
     endpoint' = unpack endpoint
     params' = (unpack *** unpack) <$> params

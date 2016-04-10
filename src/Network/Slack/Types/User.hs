@@ -36,8 +36,8 @@ data SlackUser = SlackUser
                     , slackUserIsPrimaryOwner :: Bool
                     , slackUserIsRestricted :: Bool
                     , slackUserIsUltraRestricted :: Bool
+                    , slackUserIsBot :: Bool
                     , slackUser2FAType :: Maybe TwoFAType
-                    , slackUserHasFiles :: Bool
                     } deriving Show
 
 instance FromJSON SlackProfile where
@@ -69,23 +69,25 @@ instance FromJSON SlackUser where
          , slackUserIsPrimaryOwner
          , slackUserIsRestricted
          , slackUserIsUltraRestricted
+         , slackUserIsBot
          ) <- if slackUserDeleted
-                then return (False, False, False, False, False)
+                then return (False, False, False, False, False, False)
                 else do
                     slackUserIsAdmin <- o .: "is_admin"
                     slackUserIsOwner <- o .: "is_owner"
                     slackUserIsPrimaryOwner <- o .: "is_primary_owner"
                     slackUserIsRestricted <- o .: "is_restricted"
                     slackUserIsUltraRestricted <- o .: "is_ultra_restricted"
+                    slackUserIsBot <- o .: "is_bot"
                     return ( slackUserIsAdmin
                            , slackUserIsOwner
                            , slackUserIsPrimaryOwner
                            , slackUserIsRestricted
                            , slackUserIsUltraRestricted
+                           , slackUserIsBot
                            )
 
         slackUser2FAType <- (twoFAType <$>) <$> o .:? "two_factor_type"
-        slackUserHasFiles <- o .: "has_files"
 
         return SlackUser {..}
       where
